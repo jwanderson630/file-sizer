@@ -1,16 +1,13 @@
 var express = require('express');
 var app = express();
-var imageSearch = require('node-google-image-search');
-var history = [];
-app.get('/search/:TERMS', function(req, res) {
-  var results = imageSearch(req.params.TERMS, function(final){
-      res.send(final);
-      history.push(req.params.TERMS);
-    }, req.query.offset, 5);
+var multer = require('multer');
+var upload = multer({ dest: 'uploads/' });
+app.get('/', function(req, res) {
+  res.sendfile(__dirname + "/index.html");
 });
-app.get('/latest', function(req,res){
-  res.send(history);
+app.post('/size-file', upload.single('newFile'), function(req,res,next){
+  res.send("The file is " + req.file.size + " bytes");
 });
 app.listen(8080, function () {
-  console.log('Image Search listening on port 8080');
+  console.log('File-Sizer app listening on port 8080');
 });
